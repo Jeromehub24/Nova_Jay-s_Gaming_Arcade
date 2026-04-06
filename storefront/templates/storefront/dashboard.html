@@ -9,9 +9,9 @@
         <p class="filter-label">Dashboard</p>
         <h1 class="section-title mb-0">
           {% if dashboard_mode == 'vendor' %}
-            Vendor control room
+            Vendor dashboard
           {% else %}
-            Buyer loadout
+            Buyer dashboard
           {% endif %}
         </h1>
       </div>
@@ -94,7 +94,7 @@
       <div class="section-head">
         <div>
           <p class="filter-label mb-2">Orders</p>
-          <h2 class="section-title mb-0">Recent purchases</h2>
+          <h2 class="section-title mb-0">Recent orders</h2>
         </div>
         <a href="{% url 'storefront:cart' %}" class="ghost-link">Open cart</a>
       </div>

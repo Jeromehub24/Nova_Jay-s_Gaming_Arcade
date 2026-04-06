@@ -65,6 +65,7 @@ class SignUpView(CreateView):
 
 class StorefrontLoginView(LoginView):
     template_name = "registration/login.html"
+    redirect_authenticated_user = True
 
 
 class StorefrontLogoutView(LogoutView):
@@ -271,8 +272,18 @@ class CartView(BuyerRequiredMixin, TemplateView):
 
 class UpdateCartView(BuyerRequiredMixin, View):
     def post(self, request, pk):
-        quantity = int(request.POST.get("quantity", "1"))
-        update_cart_item(request, pk, quantity)
+        product = get_object_or_404(Product, pk=pk, is_active=True)
+        try:
+            quantity = int(request.POST.get("quantity", "1"))
+        except (TypeError, ValueError):
+            messages.error(request, "Enter a valid quantity.")
+            return redirect("storefront:cart")
+
+        if quantity > product.inventory:
+            messages.error(request, "That quantity is higher than the stock available.")
+            return redirect("storefront:cart")
+
+        update_cart_item(request, product.id, quantity)
         messages.success(request, "Cart updated.")
         return redirect("storefront:cart")
 
