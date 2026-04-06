@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="detail-panel mb-4">
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-6">
+        <div class="cover-stage">
+          {% if product.image_url %}
+            <img src="{{ product.image_url }}" class="detail-cover" alt="{{ product.name }}">
+          {% else %}
+            <img src="{% static 'storefront/assets/game-cover-02.svg' %}" class="detail-cover" alt="{{ product.name }}">
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <p class="filter-label">{{ product.store.name }}</p>
+        <h1 class="section-title">{{ product.name }}</h1>
+        <div class="game-badges mb-3">
+          {% if product.platform_image_url and product.platform_brand_url %}
+            <a href="{{ product.platform_brand_url }}" target="_blank" rel="noreferrer" class="console-inline">
+              <img src="{{ product.platform_image_url }}" alt="{{ product.platform_image_alt }}">
+            </a>
+          {% else %}
+            <span class="console-label console-label-inline">{{ product.platform_brand_name }}</span>
+          {% endif %}
+          <span class="badge-chip badge-platform">{{ product.platform_label }}</span>
+          <span class="badge-chip badge-genre">{{ product.get_genre_display }}</span>
+          <span class="badge-chip badge-platform">Stock: {{ product.inventory }}</span>
+        </div>
+        <p class="subtle-copy mb-4">{{ product.description }}</p>
+        <div class="price-row mb-4">
+          <span class="price-tag">${{ product.price }}</span>
+          {% if user_role == 'buyer' %}
+            <form method="post" action="{% url 'storefront:add-to-cart' product.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button type="submit" class="btn btn-arcade btn-lg" {% if not product.is_in_stock %}disabled{% endif %}>
+                {% if product.is_in_stock %}Add To Cart{% else %}Out Of Stock{% endif %}
+              </button>
+            </form>
+          {% elif user_role == 'vendor' and request.user == product.store.vendor %}
+            <div class="d-flex gap-2">
+              <a href="{% url 'storefront:product-update' product.pk %}" class="btn btn-arcade">Edit</a>
+              <a href="{% url 'storefront:product-delete' product.pk %}" class="btn btn-outline-danger">Delete</a>
+            </div>
+          {% else %}
+            <a href="{% url 'storefront:signup' %}" class="btn btn-arcade btn-lg">Sign up as buyer</a>
+          {% endif %}
+        </div>
+        <div class="store-card">
+          <p class="filter-label mb-2">Seller</p>
+          <h2 class="game-title h4">{{ product.store.name }}</h2>
+          <p class="subtle-copy mb-3">{{ product.store.description|truncatechars:140 }}</p>
+          <a href="{{ product.store.get_absolute_url }}" class="ghost-link">Visit store</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="row g-4">
+    <div class="col-lg-7">
+      <div class="store-card h-100">
+        <div class="section-head">
+          <div>
+            <p class="filter-label mb-2">Reviews</p>
+            <h2 class="section-title h3 mb-0">Reviews</h2>
+          </div>
+        </div>
+        <div class="review-stack mt-3">
+          {% for review in product.reviews.all %}
+            <article class="review-card">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <strong>{{ review.buyer.username }}</strong>
+                <span class="badge-chip {% if review.is_verified %}badge-platform{% else %}badge-genre{% endif %}">
+                  {% if review.is_verified %}Verified Purchase{% else %}Unverified{% endif %}
+                </span>
+              </div>
+              <p class="subtle-copy mb-2">Rating: {{ review.rating }}/5</p>
+              <p class="mb-0">{{ review.comment }}</p>
+            </article>
+          {% empty %}
+            <p class="subtle-copy mb-0">No reviews yet. Be the first to leave one.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="store-card h-100">
+        <p class="filter-label mb-2">Leave a review</p>
+        <h2 class="section-title h3">Write a review</h2>
+        {% if can_review %}
+          <form method="post" action="{% url 'storefront:review-create' product.pk %}" class="row g-3 mt-1">
+            {% csrf_token %}
+            {% for field in review_form %}
+              <div class="col-12">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+              </div>
+            {% endfor %}
+            <div class="col-12 d-grid">
+              <button type="submit" class="btn btn-arcade btn-lg">Save Review</button>
+            </div>
+          </form>
+        {% else %}
+          <p class="subtle-copy mb-0">Log in with a buyer account if you want to leave a review.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock content %}

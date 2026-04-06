@@ -1,0 +1,38 @@
+{% load static %}
+<article class="col-sm-6 col-xl-4">
+  <div class="card game-card h-100">
+    <div class="cover-wrap">
+      {% if product.image_url %}
+        <img src="{{ product.image_url }}" class="game-cover" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'storefront/assets/game-cover-01.svg' %}" class="game-cover" alt="{{ product.name }}">
+      {% endif %}
+    </div>
+    <div class="card-body d-flex flex-column">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+        <div class="console-thumb">
+          {% if product.platform_image_url and product.platform_brand_url %}
+            <a href="{{ product.platform_brand_url }}" target="_blank" rel="noreferrer" class="console-link">
+              <img src="{{ product.platform_image_url }}" alt="{{ product.platform_image_alt }}">
+            </a>
+          {% else %}
+            <span class="console-label">{{ product.platform_brand_name }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="game-badges">
+        <span class="badge-chip badge-platform">{{ product.platform_label }}</span>
+        <span class="badge-chip badge-genre">{{ product.get_genre_display }}</span>
+      </div>
+      <h3 class="game-title h4">
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+      </h3>
+      <p class="subtle-copy small mb-2">{{ product.store.name }}</p>
+      <p class="subtle-copy flex-grow-1">{{ product.description|truncatechars:110 }}</p>
+      <div class="price-row">
+        <span class="price-tag">${{ product.price }}</span>
+        <a href="{{ product.get_absolute_url }}" class="btn btn-arcade">View</a>
+      </div>
+    </div>
+  </div>
+</article>

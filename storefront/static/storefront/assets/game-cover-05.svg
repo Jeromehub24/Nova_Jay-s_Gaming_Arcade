@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#081019"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg5)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#17341a"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">XBOX 360</text>
+  <circle cx="300" cy="246" r="106" fill="#5ab6ff" opacity=".18"/>
+  <circle cx="300" cy="246" r="78" fill="none" stroke="#9ce8ff" stroke-width="18"/>
+  <path d="M228 394c16-84 40-164 72-240 32 76 56 156 72 240-54 28-108 28-144 0Z" fill="#dfe8f4"/>
+  <rect x="270" y="210" width="60" height="104" rx="20" fill="#10264f"/>
+  <text x="300" y="626" text-anchor="middle" font-size="56" font-family="Georgia, serif" fill="#ffffff">Halo 4</text>
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#173a55"/>
+      <stop offset=".55" stop-color="#0b1728"/>
+      <stop offset="1" stop-color="#081019"/>
+    </linearGradient>
+  </defs>
+</svg>

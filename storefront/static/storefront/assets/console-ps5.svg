@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="PlayStation 5 console illustration">
+  <rect width="200" height="140" rx="24" fill="#0b1024"/>
+  <path d="M65 18c-16 12-27 33-27 59s10 47 26 58l20-8c-12-10-19-28-19-50s7-40 20-51l-20-8Z" fill="#f3f7ff"/>
+  <path d="M135 18c16 12 27 33 27 59s-10 47-26 58l-20-8c12-10 19-28 19-50s-7-40-20-51l20-8Z" fill="#f3f7ff"/>
+  <rect x="88" y="18" width="24" height="104" rx="8" fill="#111827"/>
+  <rect x="98" y="26" width="4" height="84" rx="2" fill="#5ab6ff"/>
+  <rect x="72" y="105" width="56" height="11" rx="5.5" fill="#1b2445"/>
+</svg>

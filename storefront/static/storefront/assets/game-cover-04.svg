@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#0a1122"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg4)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#24366f"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">PS4</text>
+  <circle cx="300" cy="254" r="118" fill="#ff9340" opacity=".94"/>
+  <path d="M184 270l116-92 116 92-38 68-78-54-78 54-38-68Z" fill="#152850"/>
+  <path d="M196 406c38-70 104-104 104-104s66 34 104 104c-74 20-134 20-208 0Z" fill="#60c5c6"/>
+  <text x="300" y="602" text-anchor="middle" font-size="42" font-family="Georgia, serif" fill="#ffffff">Horizon</text>
+  <text x="300" y="654" text-anchor="middle" font-size="54" font-family="Georgia, serif" fill="#ffffff">Forbidden West</text>
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d2d52"/>
+      <stop offset=".54" stop-color="#10244a"/>
+      <stop offset="1" stop-color="#071122"/>
+    </linearGradient>
+  </defs>
+</svg>

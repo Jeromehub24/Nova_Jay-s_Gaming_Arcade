@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-label="Xbox Series X console illustration">
+  <rect width="200" height="140" rx="24" fill="#0b1024"/>
+  <rect x="66" y="18" width="68" height="104" rx="10" fill="#151d1f"/>
+  <circle cx="100" cy="34" r="10" fill="#202a2c"/>
+  <path d="M92 34c4-6 12-6 16 0-4 6-12 6-16 0Z" fill="#88f28f"/>
+  <circle cx="83" cy="108" r="2.5" fill="#d5f7d8"/>
+  <rect x="76" y="118" width="48" height="6" rx="3" fill="#253336"/>
+</svg>

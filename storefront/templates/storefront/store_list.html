@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stores | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="section-head mb-4">
+    <div>
+      <p class="filter-label mb-2">Vendor directory</p>
+      <h1 class="section-title mb-0">Browse current stores</h1>
+    </div>
+    {% if user_role == 'vendor' %}
+      <a href="{% url 'storefront:store-create' %}" class="btn btn-arcade">Create Store</a>
+    {% endif %}
+  </section>
+
+  <section class="row g-4">
+    {% for store in stores %}
+      <div class="col-md-6 col-xl-4">
+        <div class="store-card h-100">
+          <div class="store-logo-wrap mb-3">
+            {% if store.logo_url %}
+              <img src="{{ store.logo_url }}" alt="{{ store.name }}" class="store-logo">
+            {% else %}
+              <img src="{% static 'storefront/assets/store-logo.svg' %}" alt="{{ store.name }}" class="store-logo">
+            {% endif %}
+          </div>
+          <p class="filter-label mb-2">Vendor store</p>
+          <h2 class="game-title h4">{{ store.name }}</h2>
+          <p class="subtle-copy">{{ store.description|truncatechars:120 }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="subtle-copy">{{ store.product_total }} products</span>
+            <a href="{{ store.get_absolute_url }}" class="btn btn-arcade">Open</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="empty-panel">
+          <h3>No stores yet</h3>
+          <p class="mb-0">Vendor storefronts will show up here once they are created.</p>
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+{% endblock content %}

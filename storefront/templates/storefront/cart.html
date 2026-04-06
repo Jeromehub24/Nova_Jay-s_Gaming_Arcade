@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Cart | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="section-head mb-4">
+    <div>
+      <p class="filter-label mb-2">Session cart</p>
+      <h1 class="section-title mb-0">Your current loadout</h1>
+    </div>
+  </section>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="store-card">
+        {% for item in cart_items %}
+          <article class="review-card mb-3">
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center">
+              <div>
+                <h2 class="game-title h5 mb-1">{{ item.product.name }}</h2>
+                <p class="subtle-copy mb-0">{{ item.product.store.name }} · ${{ item.product.price }} each</p>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <form method="post" action="{% url 'storefront:cart-update' item.product.pk %}" class="d-flex gap-2 align-items-center">
+                  {% csrf_token %}
+                  <input type="number" min="0" name="quantity" value="{{ item.quantity }}" class="form-control" style="width: 5rem;">
+                  <button type="submit" class="btn btn-outline-light">Update</button>
+                </form>
+                <form method="post" action="{% url 'storefront:cart-remove' item.product.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger">Remove</button>
+                </form>
+              </div>
+              <strong>${{ item.subtotal }}</strong>
+            </div>
+          </article>
+        {% empty %}
+          <div class="empty-panel">
+            <h3>Your cart is empty</h3>
+            <p class="mb-0">Add a few games from the marketplace and come back here to check out.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="store-card">
+        <p class="filter-label mb-2">Summary</p>
+        <h2 class="section-title h3">Cart total</h2>
+        <p class="display-6 mb-4">${{ cart_total }}</p>
+        <div class="d-grid gap-3">
+          <a href="{% url 'storefront:checkout' %}" class="btn btn-arcade btn-lg {% if not cart_items %}disabled{% endif %}">Checkout</a>
+          <a href="{% url 'storefront:product-list' %}" class="btn btn-outline-light btn-lg">Keep Shopping</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

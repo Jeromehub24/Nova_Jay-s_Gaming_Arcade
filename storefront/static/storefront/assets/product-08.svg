@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+  <rect width="600" height="420" rx="36" fill="#eef3f1"/>
+  <rect x="198" y="88" width="204" height="154" rx="28" fill="#243559"/>
+  <rect x="236" y="124" width="128" height="80" rx="16" fill="#f7c873"/>
+  <circle cx="300" cy="164" r="22" fill="#d46a4f"/>
+  <rect x="274" y="242" width="52" height="54" rx="16" fill="#d46a4f"/>
+  <text x="300" y="360" text-anchor="middle" font-size="42" font-family="Trebuchet MS, sans-serif" fill="#243559">ECHO</text>
+</svg>

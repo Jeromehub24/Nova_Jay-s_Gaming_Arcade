@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.pk }} | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="detail-panel">
+    <div class="section-head mb-4">
+      <div>
+        <p class="filter-label mb-2">Invoice</p>
+        <h1 class="section-title mb-0">Order #{{ order.pk }}</h1>
+      </div>
+      <span class="price-tag">${{ order.total }}</span>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="store-card h-100">
+          <p class="filter-label mb-2">Buyer</p>
+          <h2 class="game-title h4">{{ order.full_name }}</h2>
+          <p class="subtle-copy mb-2">{{ order.email }}</p>
+          <p class="subtle-copy mb-0">{{ order.created_at|date:"M d, Y g:i A" }}</p>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="store-card h-100">
+          <p class="filter-label mb-2">Items</p>
+          <div class="review-stack">
+            {% for item in order.items.all %}
+              <div class="review-card">
+                <div class="d-flex justify-content-between gap-3">
+                  <div>
+                    <strong>{{ item.product_name }}</strong>
+                    <p class="subtle-copy mb-0">{{ item.store_name }}</p>
+                  </div>
+                  <div class="text-end">
+                    <div>{{ item.quantity }} x ${{ item.price }}</div>
+                    <strong>${{ item.subtotal }}</strong>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

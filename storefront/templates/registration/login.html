@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="form-shell auth-shell">
+    <div class="form-panel">
+      <p class="filter-label">Welcome back</p>
+      <h1 class="section-title mb-3">Log in to your arcade account.</h1>
+      <form method="post" class="row g-3 mt-2">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="col-12">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+              <div class="field-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="col-12 d-grid">
+          <button type="submit" class="btn btn-arcade btn-lg">Login</button>
+        </div>
+      </form>
+      <div class="mt-3 d-flex flex-wrap gap-3">
+        <a href="{% url 'storefront:password_reset' %}" class="ghost-link">Forgot password?</a>
+        <a href="{% url 'storefront:signup' %}" class="ghost-link">Need an account?</a>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

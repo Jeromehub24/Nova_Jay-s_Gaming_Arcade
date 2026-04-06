@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#081317"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg9)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#a22834"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">NINTENDO SWITCH</text>
+  <circle cx="300" cy="246" r="112" fill="#6ed37e" opacity=".16"/>
+  <path d="M300 154 334 220l74 12-54 52 12 74-66-34-66 34 12-74-54-52 74-12 34-66Z" fill="#8af2a1"/>
+  <path d="M222 390c42-70 78-118 78-118s36 48 78 118c-58 34-98 34-156 0Z" fill="#0c2133"/>
+  <text x="300" y="610" text-anchor="middle" font-size="44" font-family="Georgia, serif" fill="#ffffff">Zelda: Tears of</text>
+  <text x="300" y="662" text-anchor="middle" font-size="58" font-family="Georgia, serif" fill="#ffffff">the Kingdom</text>
+  <defs>
+    <linearGradient id="bg9" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16384a"/>
+      <stop offset=".5" stop-color="#0b1f2a"/>
+      <stop offset="1" stop-color="#071116"/>
+    </linearGradient>
+  </defs>
+</svg>

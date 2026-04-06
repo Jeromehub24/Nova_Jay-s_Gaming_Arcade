@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+  <rect width="240" height="240" rx="48" fill="#081122"/>
+  <rect x="12" y="12" width="216" height="216" rx="40" fill="none" stroke="#5ab6ff" stroke-width="6"/>
+  <path d="M62 142c0-34 26-58 58-58s58 24 58 58c0 18-10 30-24 30h-18l-12-16h-8l-12 16H86c-14 0-24-12-24-30Z" fill="#141f3f"/>
+  <circle cx="92" cy="128" r="10" fill="#5ab6ff"/>
+  <circle cx="148" cy="128" r="10" fill="#f45bb7"/>
+  <rect x="112" y="120" width="16" height="16" rx="4" fill="#ffd166"/>
+  <path d="M88 88h64l-8 16H96l-8-16Z" fill="#88f28f"/>
+  <text x="120" y="202" text-anchor="middle" font-size="28" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">ARCADE</text>
+</svg>

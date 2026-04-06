@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Jay's Gaming | Home{% endblock title %}
+
+{% block content %}
+  <section class="hero-panel mb-4 mb-lg-5">
+    <div class="row g-0 align-items-stretch">
+      <div class="col-lg-7">
+        <div class="hero-copy">
+          <span class="eyebrow">Jeremiah Barker project</span>
+          <h1 class="hero-title mb-3">Jay's Gaming keeps PS5, Xbox, Switch, and PC games in one spot.</h1>
+          <p class="hero-lead mb-0">
+            I built this with Django and kept the main store features in it:
+            accounts, vendor stores, product listings, carts, reviews, checkout, and invoice emails.
+          </p>
+          <div class="row g-3 hero-stats mt-1">
+            <div class="col-sm-4">
+              <div class="stat-card">
+                <span class="stat-value">{{ stats.stores }}</span>
+                <span class="subtle-copy">stores</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="stat-card">
+                <span class="stat-value">{{ stats.products }}</span>
+                <span class="subtle-copy">products</span>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="stat-card">
+                <span class="stat-value">{{ stats.vendors }}</span>
+                <span class="subtle-copy">vendors</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-actions mt-4">
+            <a href="{% url 'storefront:product-list' %}" class="btn btn-arcade btn-lg">Browse Games</a>
+            <a href="{% url 'storefront:signup' %}" class="btn btn-outline-light btn-lg">Create Account</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-stage">
+          <p class="filter-label">Vendor and buyer paths</p>
+          <div class="platform-rack mb-3">
+            {% for spotlight in platform_spotlights %}
+              {% if spotlight.brand_url %}
+                <a href="{{ spotlight.brand_url }}" class="platform-card platform-card-link" target="_blank" rel="noreferrer">
+                  <img src="{{ spotlight.image_url }}" alt="{{ spotlight.image_alt }}">
+                  <span>{{ spotlight.copy }}</span>
+                </a>
+              {% else %}
+                <div class="platform-card">
+                  <span class="console-label">{{ spotlight.brand_name }}</span>
+                  <span>{{ spotlight.copy }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="hero-callout">
+            <h2 class="section-title h4 mb-2">What it does</h2>
+            <p class="subtle-copy mb-0">
+              Buyers can shop and review games. Vendors can build stores and manage products.
+              Password reset, carts, and order emails are already working too.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-5">
+    <div class="section-head">
+      <div>
+        <p class="filter-label mb-2">Featured products</p>
+        <h2 class="section-title mb-0">Games in the shop</h2>
+      </div>
+      <a href="{% url 'storefront:product-list' %}" class="ghost-link">See all products</a>
+    </div>
+    <div class="row g-4 mt-1">
+      {% for product in featured_products %}
+        {% include "storefront/_product_card.html" %}
+      {% empty %}
+        <div class="col-12">
+          <div class="empty-panel">
+            <h3>No products yet</h3>
+            <p class="mb-0">Make a vendor account, create a store, and add your first game.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="dashboard-panel mb-4">
+    <div class="section-head">
+      <div>
+        <p class="filter-label">Dashboard</p>
+        <h1 class="section-title mb-0">
+          {% if dashboard_mode == 'vendor' %}
+            Vendor control room
+          {% else %}
+            Buyer loadout
+          {% endif %}
+        </h1>
+      </div>
+      <div class="hero-actions">
+        {% if dashboard_mode == 'vendor' %}
+          <a href="{% url 'storefront:store-create' %}" class="btn btn-arcade">Create Store</a>
+          <a href="{% url 'storefront:product-create' %}" class="btn btn-outline-light">Add Product</a>
+        {% else %}
+          <a href="{% url 'storefront:product-list' %}" class="btn btn-arcade">Browse Marketplace</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+      {% for label, value in stats.items %}
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card h-100">
+            <span class="stat-value">{{ value }}</span>
+            <span class="subtle-copy">{{ label|title }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if dashboard_mode == 'vendor' %}
+    <section class="mb-4">
+      <div class="section-head">
+        <div>
+          <p class="filter-label mb-2">Stores</p>
+          <h2 class="section-title mb-0">Your storefronts</h2>
+        </div>
+      </div>
+      <div class="row g-4 mt-1">
+        {% for store in stores %}
+          <div class="col-md-6">
+            <div class="store-card">
+              <h3 class="game-title h4">{{ store.name }}</h3>
+              <p class="subtle-copy">{{ store.description|truncatechars:110 }}</p>
+              <div class="d-flex flex-wrap gap-2">
+                <a href="{{ store.get_absolute_url }}" class="btn btn-arcade">View</a>
+                <a href="{% url 'storefront:store-update' store.pk %}" class="btn btn-outline-light">Edit</a>
+                <a href="{% url 'storefront:store-delete' store.pk %}" class="btn btn-outline-danger">Delete</a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-panel">
+              <h3>No stores yet</h3>
+              <p class="mb-0">Open your first store to start listing products.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="filter-label mb-2">Inventory</p>
+          <h2 class="section-title mb-0">Your products</h2>
+        </div>
+      </div>
+      <div class="row g-4 mt-1">
+        {% for product in products %}
+          {% include "storefront/_product_card.html" %}
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-panel">
+              <h3>No products yet</h3>
+              <p class="mb-0">Once you add products they will show up here and in the marketplace.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% else %}
+    <section>
+      <div class="section-head">
+        <div>
+          <p class="filter-label mb-2">Orders</p>
+          <h2 class="section-title mb-0">Recent purchases</h2>
+        </div>
+        <a href="{% url 'storefront:cart' %}" class="ghost-link">Open cart</a>
+      </div>
+      <div class="row g-4 mt-1">
+        {% for order in orders %}
+          <div class="col-md-6">
+            <div class="store-card">
+              <p class="filter-label mb-2">Order #{{ order.pk }}</p>
+              <h3 class="game-title h4 mb-3">${{ order.total }}</h3>
+              <p class="subtle-copy mb-3">{{ order.created_at|date:"M d, Y g:i A" }}</p>
+              <a href="{{ order.get_absolute_url }}" class="btn btn-arcade">View invoice</a>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-12">
+            <div class="empty-panel">
+              <h3>No orders yet</h3>
+              <p class="mb-0">Start browsing the marketplace and build your first cart.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock content %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit Store{% else %}Create Store{% endif %} | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="form-shell">
+    <div class="form-panel">
+      <p class="filter-label">{% if form.instance.pk %}Store update{% else %}New store{% endif %}</p>
+      <h1 class="section-title mb-3">{% if form.instance.pk %}Edit store details{% else %}Create a vendor store{% endif %}</h1>
+      <form method="post" class="row g-3">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="col-12">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+              <div class="field-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="col-12 d-flex flex-wrap gap-3">
+          <button type="submit" class="btn btn-arcade btn-lg">Save Store</button>
+          <a href="{% url 'storefront:dashboard' %}" class="btn btn-outline-light btn-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock content %}

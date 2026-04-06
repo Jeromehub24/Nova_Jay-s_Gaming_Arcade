@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Jay's Gaming logo</title>
+  <desc id="desc">Shield-style logo with JG initials and neon game controller details.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#101a3f"/>
+      <stop offset="55%" stop-color="#0b0f24"/>
+      <stop offset="100%" stop-color="#050815"/>
+    </linearGradient>
+    <linearGradient id="stroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5ab6ff"/>
+      <stop offset="100%" stop-color="#f45bb7"/>
+    </linearGradient>
+    <linearGradient id="text" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166"/>
+      <stop offset="100%" stop-color="#88f28f"/>
+    </linearGradient>
+  </defs>
+  <rect x="14" y="14" width="212" height="212" rx="54" fill="url(#bg)" stroke="url(#stroke)" stroke-width="10"/>
+  <path d="M63 160c10-29 22-57 39-83h27l-22 46h24c15 0 26-8 31-24l8-22h26l-10 28c-8 23-27 35-55 35h-36l-10 20H63Z" fill="url(#text)"/>
+  <path d="M118 82h56c18 0 31 6 39 17 8 11 9 25 3 41-8 23-26 35-54 35h-19l7-19h16c16 0 27-7 32-22 3-9 3-16-1-22-5-7-13-10-26-10h-60l7-20Z" fill="#eef3ff"/>
+  <circle cx="78" cy="77" r="8" fill="#5ab6ff"/>
+  <circle cx="97" cy="63" r="6" fill="#f45bb7"/>
+  <circle cx="172" cy="170" r="7" fill="#ffd166"/>
+  <circle cx="190" cy="156" r="5" fill="#88f28f"/>
+  <path d="M44 188c20-18 46-28 76-29 29 1 56 11 76 29" fill="none" stroke="#5ab6ff" stroke-opacity=".5" stroke-width="8" stroke-linecap="round"/>
+</svg>

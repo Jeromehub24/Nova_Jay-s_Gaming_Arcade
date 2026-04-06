@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+  <rect width="600" height="420" rx="36" fill="#f0f3f9"/>
+  <path d="M132 252h336l-78 46H210l-78-46Z" fill="#243559"/>
+  <path d="M202 122h196l32 118H170l32-118Z" fill="#f7c873"/>
+  <path d="M238 146h124l16 62H222l16-62Z" fill="#d46a4f"/>
+  <text x="300" y="360" text-anchor="middle" font-size="42" font-family="Trebuchet MS, sans-serif" fill="#243559">NIMBUS</text>
+</svg>

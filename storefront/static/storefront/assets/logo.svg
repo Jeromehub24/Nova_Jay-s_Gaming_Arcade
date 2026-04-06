@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title">
+  <title>Nova Cart logo</title>
+  <rect width="240" height="240" rx="48" fill="#1f2a44"/>
+  <circle cx="75" cy="78" r="32" fill="#f7c873"/>
+  <path d="M55 155h130c10 0 18 8 18 18v8H37v-8c0-10 8-18 18-18Z" fill="#d46a4f"/>
+  <path d="M99 54h42l34 86h-28l-8-20H99l-8 20H63l36-86Zm8 46h24l-12-30-12 30Z" fill="#fff4e8"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+  <rect width="600" height="420" rx="36" fill="#f6eee5"/>
+  <circle cx="214" cy="190" r="90" fill="#243559"/>
+  <circle cx="386" cy="190" r="90" fill="#d46a4f"/>
+  <rect x="206" y="262" width="188" height="34" rx="17" fill="#f7c873"/>
+  <text x="300" y="360" text-anchor="middle" font-size="42" font-family="Trebuchet MS, sans-serif" fill="#243559">AURORA</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#0a1122"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg8)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#15311a"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">XBOX ONE</text>
+  <circle cx="436" cy="210" r="84" fill="#ffd166"/>
+  <path d="M112 468c78-110 166-200 266-276 56 28 102 64 140 110-112 46-220 102-322 166H112Z" fill="#3fd0c9"/>
+  <path d="M156 506c90-48 188-90 296-126l52 70H156v56Z" fill="#ff6f61"/>
+  <text x="300" y="620" text-anchor="middle" font-size="46" font-family="Georgia, serif" fill="#ffffff">Forza Horizon 5</text>
+  <defs>
+    <linearGradient id="bg8" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#11435d"/>
+      <stop offset=".48" stop-color="#0d203b"/>
+      <stop offset="1" stop-color="#081022"/>
+    </linearGradient>
+  </defs>
+</svg>

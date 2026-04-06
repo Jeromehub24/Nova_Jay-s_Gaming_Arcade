@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#08111f"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg2)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#112748"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">PS5</text>
+  <path d="M222 190c38 26 68 70 82 124 30-28 66-42 106-44-34 50-48 98-40 146-48-20-92-18-134 8-4-42-22-82-56-120 22-48 38-86 42-114Z" fill="#d9e8ff" opacity=".9"/>
+  <path d="M320 182l40 26-74 142-34-16 68-152Z" fill="#8fd8ff"/>
+  <text x="300" y="616" text-anchor="middle" font-size="44" font-family="Georgia, serif" fill="#ffffff">God of War</text>
+  <text x="300" y="668" text-anchor="middle" font-size="60" font-family="Georgia, serif" fill="#ffffff">Ragnarok</text>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d345a"/>
+      <stop offset=".52" stop-color="#0e172c"/>
+      <stop offset="1" stop-color="#2b0c12"/>
+    </linearGradient>
+  </defs>
+</svg>

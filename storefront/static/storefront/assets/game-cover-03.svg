@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#090e10"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg3)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#24366f"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">PS4</text>
+  <circle cx="286" cy="246" r="100" fill="#dde8d7" opacity=".18"/>
+  <path d="M208 410c34-88 56-176 74-264 18 82 40 170 84 264-52 30-108 30-158 0Z" fill="#dfe6d6"/>
+  <rect x="252" y="220" width="58" height="102" rx="24" fill="#0d1115"/>
+  <text x="300" y="610" text-anchor="middle" font-size="40" font-family="Georgia, serif" fill="#ffffff">The Last of Us</text>
+  <text x="300" y="662" text-anchor="middle" font-size="52" font-family="Georgia, serif" fill="#ffffff">Remastered</text>
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f4736"/>
+      <stop offset=".52" stop-color="#101716"/>
+      <stop offset="1" stop-color="#090d0e"/>
+    </linearGradient>
+  </defs>
+</svg>

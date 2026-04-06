@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+  <rect width="600" height="420" rx="36" fill="#f7f1ee"/>
+  <path d="M236 106h128c40 0 72 32 72 72v40c0 60-48 108-108 108H272c-60 0-108-48-108-108v-40c0-40 32-72 72-72Z" fill="#243559"/>
+  <rect x="286" y="126" width="28" height="96" rx="14" fill="#f7c873"/>
+  <circle cx="300" cy="296" r="16" fill="#d46a4f"/>
+  <text x="300" y="372" text-anchor="middle" font-size="42" font-family="Trebuchet MS, sans-serif" fill="#243559">COMET</text>
+</svg>

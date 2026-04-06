@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+  <rect width="600" height="420" rx="36" fill="#fff4e8"/>
+  <rect x="230" y="86" width="140" height="210" rx="28" fill="#d46a4f"/>
+  <rect x="252" y="70" width="96" height="40" rx="20" fill="#243559"/>
+  <path d="M254 142h92v114c0 18-15 32-32 32h-28c-18 0-32-14-32-32V142Z" fill="#f7c873"/>
+  <text x="300" y="360" text-anchor="middle" font-size="42" font-family="Trebuchet MS, sans-serif" fill="#243559">DRIFT</text>
+</svg>

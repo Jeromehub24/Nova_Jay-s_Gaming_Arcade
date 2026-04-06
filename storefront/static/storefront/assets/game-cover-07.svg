@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800">
+  <rect width="600" height="800" fill="#0a1510"/>
+  <rect x="24" y="24" width="552" height="752" rx="28" fill="url(#bg7)"/>
+  <rect x="52" y="52" width="496" height="48" rx="16" fill="#15311a"/>
+  <text x="300" y="84" text-anchor="middle" font-size="26" font-family="Trebuchet MS, sans-serif" fill="#eef3ff">XBOX ONE</text>
+  <path d="M212 384c26-90 54-170 88-240 32 70 60 150 88 240-24 20-56 32-88 32s-64-12-88-32Z" fill="#9acb6b"/>
+  <rect x="254" y="196" width="92" height="132" rx="24" fill="#213624"/>
+  <rect x="272" y="218" width="56" height="26" rx="8" fill="#bce39b"/>
+  <text x="300" y="612" text-anchor="middle" font-size="42" font-family="Georgia, serif" fill="#ffffff">Halo: Master Chief</text>
+  <text x="300" y="664" text-anchor="middle" font-size="50" font-family="Georgia, serif" fill="#ffffff">Collection</text>
+  <defs>
+    <linearGradient id="bg7" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#38512b"/>
+      <stop offset=".52" stop-color="#152219"/>
+      <stop offset="1" stop-color="#09130f"/>
+    </linearGradient>
+  </defs>
+</svg>

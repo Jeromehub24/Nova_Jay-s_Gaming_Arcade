@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Marketplace | Jay's Gaming{% endblock title %}
+
+{% block content %}
+  <section class="mb-4">
+    <div class="section-head">
+      <div>
+        <p class="filter-label mb-2">Marketplace</p>
+        <h1 class="section-title mb-0">Browse the current lineup</h1>
+      </div>
+      <a href="{% url 'storefront:store-list' %}" class="ghost-link">Browse stores</a>
+    </div>
+  </section>
+
+  <section class="filter-bar mb-4">
+    <form method="get" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="id_q">Search</label>
+        <input type="text" id="id_q" name="q" value="{{ search_query }}" class="form-control" placeholder="Halo, racing, sports, RPG...">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="id_platform">Platform</label>
+        <select id="id_platform" name="platform" class="form-select">
+          <option value="">All platforms</option>
+          {% for value, label in platform_choices %}
+            <option value="{{ value }}" {% if active_platform == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2 d-grid align-items-end">
+        <button type="submit" class="btn btn-arcade btn-lg">Filter</button>
+      </div>
+    </form>
+  </section>
+
+  <section>
+    <div class="row g-4">
+      {% for product in products %}
+        {% include "storefront/_product_card.html" %}
+      {% empty %}
+        <div class="col-12">
+          <div class="empty-panel">
+            <h3>No products matched</h3>
+            <p class="mb-0">Try widening your search or ask a vendor to add fresh inventory.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock content %}
