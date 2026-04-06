@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.core.mail import send_mail
 
+from .functions.twitter_client import TweetClient
 from .models import Order, OrderItem, Product, UserProfile
 
 
@@ -166,3 +167,11 @@ def create_order_from_cart(request, buyer, full_name, email):
     send_invoice_email(order)
     clear_cart(request)
     return order
+
+
+def announce_new_store(store):
+    return TweetClient().post_store_created(store)
+
+
+def announce_new_product(product):
+    return TweetClient().post_product_created(product)

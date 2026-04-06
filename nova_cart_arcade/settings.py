@@ -4,6 +4,7 @@ Settings for the Nova Cart Arcade project.
 This configuration stays intentionally simple for coursework and local testing.
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'storefront',
 ]
 
@@ -120,6 +122,23 @@ LOGOUT_REDIRECT_URL = 'storefront:home'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'noreply@novacart.local'
 PASSWORD_RESET_TIMEOUT = 60 * 60
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+TWITTER_API_KEY = os.environ.get("TWITTER_API_KEY", "")
+TWITTER_API_SECRET = os.environ.get("TWITTER_API_SECRET", "")
+TWITTER_ACCESS_TOKEN = os.environ.get("TWITTER_ACCESS_TOKEN", "")
+TWITTER_ACCESS_TOKEN_SECRET = os.environ.get("TWITTER_ACCESS_TOKEN_SECRET", "")
+TWITTER_ENABLED = os.environ.get("TWITTER_ENABLED", "0") == "1"
+TWITTER_LOG_FILE = BASE_DIR / "tweet_events.log"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

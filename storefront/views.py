@@ -25,6 +25,8 @@ from .mixins import (
 from .models import Order, OrderItem, Product, Review, Store
 from .services import (
     add_product_to_cart,
+    announce_new_product,
+    announce_new_store,
     create_order_from_cart,
     get_cart_items,
     get_cart_total,
@@ -179,7 +181,9 @@ class StoreCreateView(VendorRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.vendor = self.request.user
         messages.success(self.request, "Store created.")
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        announce_new_store(self.object)
+        return response
 
 
 class StoreUpdateView(VendorRequiredMixin, OwnedStoreQuerysetMixin, UpdateView):
@@ -213,7 +217,9 @@ class ProductCreateView(VendorRequiredMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, "Product added to your store.")
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        announce_new_product(self.object)
+        return response
 
 
 class ProductUpdateView(VendorRequiredMixin, OwnedProductQuerysetMixin, UpdateView):

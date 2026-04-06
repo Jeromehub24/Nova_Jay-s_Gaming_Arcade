@@ -1,9 +1,11 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from .models import Order, Product, Store, UserProfile
 
@@ -68,3 +70,106 @@ class StorefrontFlowTests(TestCase):
         self.assertIn("xbox.com", Product(platform=Product.XBOX).platform_brand_url)
         self.assertIn("nintendo.com", Product(platform=Product.NINTENDO).platform_brand_url)
         self.assertEqual(Product(platform=Product.PC).platform_image_url, "")
+
+    def test_vendor_web_store_create_calls_announcement(self):
+        self.client.login(username="vendor", password="secret123")
+        with patch("storefront.views.announce_new_store") as announce_mock:
+            response = self.client.post(
+                reverse("storefront:store-create"),
+                {
+                    "name": "Side Quest Supply",
+                    "description": "A second test store.",
+                    "logo_url": "https://example.com/logo.png",
+                },
+            )
+
+        new_store = Store.objects.get(name="Side Quest Supply")
+        self.assertRedirects(response, reverse("storefront:store-detail", args=[new_store.pk]))
+        announce_mock.assert_called_once_with(new_store)
+
+
+class StorefrontApiTests(APITestCase):
+    def setUp(self):
+        self.vendor = User.objects.create_user(username="vendor_api", password="secret123")
+        self.buyer = User.objects.create_user(username="buyer_api", password="secret123")
+        UserProfile.objects.create(user=self.vendor, role=UserProfile.VENDOR)
+        UserProfile.objects.create(user=self.buyer, role=UserProfile.BUYER)
+        self.store = Store.objects.create(
+            vendor=self.vendor,
+            name="Controller Corner",
+            description="Pads, sticks, and racing wheels.",
+        )
+        self.product = Product.objects.create(
+            store=self.store,
+            name="EA Sports FC 26",
+            description="Football game with quick matches.",
+            platform=Product.PLAYSTATION,
+            genre=Product.SPORTS,
+            price=Decimal("59.99"),
+            inventory=8,
+        )
+
+    def test_vendor_can_create_store_with_api(self):
+        self.client.login(username="vendor_api", password="secret123")
+        with patch("storefront.api_views.announce_new_store") as announce_mock:
+            response = self.client.post(
+                "/api/stores/",
+                {
+                    "name": "Arcade Replay",
+                    "description": "Retro and new releases.",
+                    "logo_url": "https://example.com/replay-logo.png",
+                },
+                format="json",
+            )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Store.objects.filter(name="Arcade Replay", vendor=self.vendor).exists())
+        announce_mock.assert_called_once()
+
+    def test_vendor_can_add_product_with_api(self):
+        self.client.login(username="vendor_api", password="secret123")
+        with patch("storefront.api_views.announce_new_product") as announce_mock:
+            response = self.client.post(
+                f"/api/stores/{self.store.pk}/products/",
+                {
+                    "name": "Halo Infinite",
+                    "description": "Shooter with campaign and multiplayer.",
+                    "platform": Product.XBOX,
+                    "genre": Product.SHOOTER,
+                    "price": "49.99",
+                    "inventory": 4,
+                    "image_url": "https://example.com/halo.png",
+                    "is_active": True,
+                },
+                format="json",
+            )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Product.objects.filter(name="Halo Infinite", store=self.store).exists())
+        announce_mock.assert_called_once()
+
+    def test_buyer_can_view_vendor_stores_and_store_products(self):
+        self.client.login(username="buyer_api", password="secret123")
+        store_response = self.client.get(f"/api/vendors/{self.vendor.pk}/stores/")
+        product_response = self.client.get(f"/api/stores/{self.store.pk}/products/")
+
+        self.assertEqual(store_response.status_code, 200)
+        self.assertEqual(product_response.status_code, 200)
+        self.assertEqual(store_response.data[0]["name"], self.store.name)
+        self.assertEqual(product_response.data[0]["name"], self.product.name)
+
+    def test_vendor_can_retrieve_product_reviews_with_api(self):
+        self.client.login(username="buyer_api", password="secret123")
+        self.product.reviews.create(
+            buyer=self.buyer,
+            rating=4,
+            comment="Pretty fun game night pickup.",
+            is_verified=False,
+        )
+        self.client.logout()
+
+        self.client.login(username="vendor_api", password="secret123")
+        response = self.client.get(f"/api/products/{self.product.pk}/reviews/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data[0]["comment"], "Pretty fun game night pickup.")
