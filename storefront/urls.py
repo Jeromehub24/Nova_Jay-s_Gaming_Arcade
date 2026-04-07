@@ -50,17 +50,25 @@ urlpatterns = [
     ),
     path(
         "password-reset/done/",
-        PasswordResetDoneView.as_view(template_name="registration/password_reset_done.html"),
+        PasswordResetDoneView.as_view(
+            template_name="registration/password_reset_done.html"
+        ),
         name="password_reset_done",
     ),
     path(
         "password-reset/confirm/<uidb64>/<token>/",
-        PasswordResetConfirmView.as_view(template_name="registration/password_reset_confirm.html"),
+        PasswordResetConfirmView.as_view(
+            template_name="registration/password_reset_confirm.html",
+            # Django's default success URL is non-namespaced, so set it here.
+            success_url=reverse_lazy("storefront:password_reset_complete"),
+        ),
         name="password_reset_confirm",
     ),
     path(
         "password-reset/complete/",
-        PasswordResetCompleteView.as_view(template_name="registration/password_reset_complete.html"),
+        PasswordResetCompleteView.as_view(
+            template_name="registration/password_reset_complete.html"
+        ),
         name="password_reset_complete",
     ),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
@@ -73,7 +81,11 @@ urlpatterns = [
     path("products/create/", ProductCreateView.as_view(), name="product-create"),
     path("products/<int:pk>/", ProductDetailView.as_view(), name="product-detail"),
     path("products/<int:pk>/edit/", ProductUpdateView.as_view(), name="product-update"),
-    path("products/<int:pk>/delete/", ProductDeleteView.as_view(), name="product-delete"),
+    path(
+        "products/<int:pk>/delete/",
+        ProductDeleteView.as_view(),
+        name="product-delete",
+    ),
     path("products/<int:pk>/cart/", AddToCartView.as_view(), name="add-to-cart"),
     path("products/<int:pk>/review/", CreateReviewView.as_view(), name="review-create"),
     path("cart/", CartView.as_view(), name="cart"),

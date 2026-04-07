@@ -34,7 +34,14 @@
               {% if user_role == 'buyer' %}
                 <a href="{% url 'storefront:cart' %}">Cart <span class="nav-pill">{{ cart_count }}</span></a>
               {% endif %}
-              <a href="{% url 'storefront:logout' %}">Logout</a>
+              <form
+                method="post"
+                action="{% url 'storefront:logout' %}"
+                class="nav-inline-form"
+              >
+                {% csrf_token %}
+                <button type="submit" class="nav-button">Logout</button>
+              </form>
             {% else %}
               <a href="{% url 'storefront:login' %}">Login</a>
               <a href="{% url 'storefront:signup' %}" class="nav-cta">Sign Up</a>

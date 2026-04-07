@@ -2,18 +2,29 @@ from decimal import Decimal
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework.test import APITestCase
 
-from .models import Order, Product, Store, UserProfile
+from .models import Order, OrderItem, Product, Review, Store, UserProfile
 
 
 class StorefrontFlowTests(TestCase):
     def setUp(self):
-        self.vendor = User.objects.create_user(username="vendor", password="secret123", email="vendor@example.com")
-        self.buyer = User.objects.create_user(username="buyer", password="secret123", email="buyer@example.com")
+        self.vendor = User.objects.create_user(
+            username="vendor",
+            password="secret123",
+            email="vendor@example.com",
+        )
+        self.buyer = User.objects.create_user(
+            username="buyer",
+            password="secret123",
+            email="buyer@example.com",
+        )
         UserProfile.objects.create(user=self.vendor, role=UserProfile.VENDOR)
         UserProfile.objects.create(user=self.buyer, role=UserProfile.BUYER)
         self.store = Store.objects.create(
@@ -46,9 +57,63 @@ class StorefrontFlowTests(TestCase):
         user = User.objects.get(username="newvendor")
         self.assertEqual(user.profile.role, UserProfile.VENDOR)
 
+    def test_logout_is_rendered_as_post_form(self):
+        self.client.login(username="buyer", password="secret123")
+
+        response = self.client.get(reverse("storefront:home"))
+
+        self.assertContains(
+            response,
+            f'action="{reverse("storefront:logout")}"',
+        )
+        self.assertContains(response, 'method="post"')
+
+    def test_logout_post_ends_the_session(self):
+        self.client.login(username="buyer", password="secret123")
+
+        response = self.client.post(reverse("storefront:logout"))
+
+        self.assertRedirects(response, reverse("storefront:home"))
+        dashboard_response = self.client.get(reverse("storefront:dashboard"))
+        self.assertEqual(dashboard_response.status_code, 302)
+
+    def test_password_reset_confirm_redirects_to_namespaced_complete_url(self):
+        uidb64 = urlsafe_base64_encode(force_bytes(self.buyer.pk))
+        token = default_token_generator.make_token(self.buyer)
+        confirm_url = reverse(
+            "storefront:password_reset_confirm",
+            kwargs={"uidb64": uidb64, "token": token},
+        )
+
+        # Django rewrites the token URL once before it accepts the password POST.
+        redirect_response = self.client.get(confirm_url)
+        self.assertEqual(redirect_response.status_code, 302)
+
+        response = self.client.post(
+            redirect_response.url,
+            {
+                "new_password1": "new-strong-pass-123",
+                "new_password2": "new-strong-pass-123",
+            },
+        )
+
+        # This catches the built-in non-namespaced success URL regression.
+        self.assertRedirects(
+            response,
+            reverse("storefront:password_reset_complete"),
+        )
+        self.assertTrue(
+            self.client.login(
+                username="buyer",
+                password="new-strong-pass-123",
+            )
+        )
+
     def test_buyer_can_add_product_to_cart(self):
         self.client.login(username="buyer", password="secret123")
-        response = self.client.post(reverse("storefront:add-to-cart", args=[self.product.pk]))
+        response = self.client.post(
+            reverse("storefront:add-to-cart", args=[self.product.pk])
+        )
         self.assertRedirects(response, reverse("storefront:cart"))
         session_cart = self.client.session.get("nova_cart", {})
         self.assertEqual(session_cart[str(self.product.pk)], 1)
@@ -58,17 +123,32 @@ class StorefrontFlowTests(TestCase):
         self.client.post(reverse("storefront:add-to-cart", args=[self.product.pk]))
         response = self.client.post(
             reverse("storefront:checkout"),
-            {"full_name": "Jeremiah Barker", "email": "jeremiah@example.com"},
+            {
+                "full_name": "Jeremiah Barker",
+                "email": "jeremiah@example.com",
+            },
         )
         order = Order.objects.get()
-        self.assertRedirects(response, reverse("storefront:order-detail", args=[order.pk]))
+        self.assertRedirects(
+            response,
+            reverse("storefront:order-detail", args=[order.pk]),
+        )
         self.assertEqual(order.total, Decimal("39.99"))
         self.assertEqual(len(mail.outbox), 1)
 
     def test_platform_media_helpers_match_real_console_links(self):
-        self.assertIn("playstation.com", Product(platform=Product.PLAYSTATION).platform_brand_url)
-        self.assertIn("xbox.com", Product(platform=Product.XBOX).platform_brand_url)
-        self.assertIn("nintendo.com", Product(platform=Product.NINTENDO).platform_brand_url)
+        self.assertIn(
+            "playstation.com",
+            Product(platform=Product.PLAYSTATION).platform_brand_url,
+        )
+        self.assertIn(
+            "xbox.com",
+            Product(platform=Product.XBOX).platform_brand_url,
+        )
+        self.assertIn(
+            "nintendo.com",
+            Product(platform=Product.NINTENDO).platform_brand_url,
+        )
         self.assertEqual(Product(platform=Product.PC).platform_image_url, "")
 
     def test_vendor_web_store_create_calls_announcement(self):
@@ -84,14 +164,53 @@ class StorefrontFlowTests(TestCase):
             )
 
         new_store = Store.objects.get(name="Side Quest Supply")
-        self.assertRedirects(response, reverse("storefront:store-detail", args=[new_store.pk]))
+        self.assertRedirects(
+            response,
+            reverse("storefront:store-detail", args=[new_store.pk]),
+        )
         announce_mock.assert_called_once_with(new_store)
+
+    def test_review_is_marked_verified_after_a_purchase(self):
+        Order.objects.create(
+            buyer=self.buyer,
+            full_name="Jeremiah Barker",
+            email="buyer@example.com",
+            total=self.product.price,
+        )
+        order = Order.objects.get()
+        OrderItem.objects.create(
+            order=order,
+            product=self.product,
+            store_name=self.store.name,
+            product_name=self.product.name,
+            price=self.product.price,
+            quantity=1,
+        )
+
+        self.client.login(username="buyer", password="secret123")
+        response = self.client.post(
+            reverse("storefront:review-create", args=[self.product.pk]),
+            {"rating": 5, "comment": "Loved it."},
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("storefront:product-detail", args=[self.product.pk]),
+        )
+        review = Review.objects.get(product=self.product, buyer=self.buyer)
+        self.assertTrue(review.is_verified)
 
 
 class StorefrontApiTests(APITestCase):
     def setUp(self):
-        self.vendor = User.objects.create_user(username="vendor_api", password="secret123")
-        self.buyer = User.objects.create_user(username="buyer_api", password="secret123")
+        self.vendor = User.objects.create_user(
+            username="vendor_api",
+            password="secret123",
+        )
+        self.buyer = User.objects.create_user(
+            username="buyer_api",
+            password="secret123",
+        )
         UserProfile.objects.create(user=self.vendor, role=UserProfile.VENDOR)
         UserProfile.objects.create(user=self.buyer, role=UserProfile.BUYER)
         self.store = Store.objects.create(
@@ -123,7 +242,12 @@ class StorefrontApiTests(APITestCase):
             )
 
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(Store.objects.filter(name="Arcade Replay", vendor=self.vendor).exists())
+        self.assertTrue(
+            Store.objects.filter(
+                name="Arcade Replay",
+                vendor=self.vendor,
+            ).exists()
+        )
         announce_mock.assert_called_once()
 
     def test_vendor_can_add_product_with_api(self):
@@ -145,7 +269,12 @@ class StorefrontApiTests(APITestCase):
             )
 
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(Product.objects.filter(name="Halo Infinite", store=self.store).exists())
+        self.assertTrue(
+            Product.objects.filter(
+                name="Halo Infinite",
+                store=self.store,
+            ).exists()
+        )
         announce_mock.assert_called_once()
 
     def test_buyer_can_view_vendor_stores_and_store_products(self):

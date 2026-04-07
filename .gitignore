@@ -1,6 +1,12 @@
 .venv/
 __pycache__/
 *.py[cod]
+.env
+.env.*
+!.env.example
 db.sqlite3
 staticfiles/
 tweet_events.log
+storefront_graph.dot
+storefront_graph.png
+storefront_py2puml.puml

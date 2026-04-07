@@ -99,9 +99,20 @@ a {
   align-items: center;
 }
 
-.nav-links a {
+.nav-links a,
+.nav-button {
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
+}
+
+.nav-inline-form {
+  margin: 0;
+}
+
+.nav-button {
+  border: 0;
+  color: inherit;
+  background: transparent;
 }
 
 .nav-cta,
