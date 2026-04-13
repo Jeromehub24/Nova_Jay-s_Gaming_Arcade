@@ -1,3 +1,5 @@
+"""Database models for users, catalog items, orders, and reviews."""
+
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -7,6 +9,8 @@ from django.urls import reverse
 
 
 class UserProfile(models.Model):
+    """Store the role associated with a Django user account."""
+
     BUYER = "buyer"
     VENDOR = "vendor"
     ROLE_CHOICES = [
@@ -18,10 +22,13 @@ class UserProfile(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=BUYER)
 
     def __str__(self):
+        """Return a readable representation of the user role."""
         return f"{self.user.username} ({self.role})"
 
 
 class Store(models.Model):
+    """A vendor-owned storefront that groups multiple products."""
+
     vendor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="stores")
     name = models.CharField(max_length=120)
     description = models.TextField()
@@ -33,13 +40,17 @@ class Store(models.Model):
         ordering = ["name"]
 
     def __str__(self):
+        """Return the store name for admin and template displays."""
         return self.name
 
     def get_absolute_url(self):
+        """Return the canonical detail page for the store."""
         return reverse("storefront:store-detail", kwargs={"pk": self.pk})
 
 
 class Product(models.Model):
+    """A sellable game or gaming product offered by a store."""
+
     PLAYSTATION = "playstation"
     XBOX = "xbox"
     NINTENDO = "nintendo"
@@ -120,41 +131,51 @@ class Product(models.Model):
         ordering = ["name"]
 
     def __str__(self):
+        """Return the product name for human-readable displays."""
         return self.name
 
     def get_absolute_url(self):
+        """Return the canonical detail page for the product."""
         return reverse("storefront:product-detail", kwargs={"pk": self.pk})
 
     @property
     def is_in_stock(self):
+        """Return ``True`` when the product can currently be purchased."""
         return self.inventory > 0 and self.is_active
 
     @property
     def platform_label(self):
+        """Return the display label for the stored platform value."""
         return dict(self.PLATFORM_CHOICES).get(self.platform, self.platform.title())
 
     @property
     def platform_media(self):
+        """Return branding metadata associated with the product platform."""
         return self.PLATFORM_MEDIA.get(self.platform, {})
 
     @property
     def platform_brand_name(self):
+        """Return the headline brand name for the product platform."""
         return self.platform_media.get("brand_name", self.platform_label)
 
     @property
     def platform_brand_url(self):
+        """Return the external brand URL for the product platform."""
         return self.platform_media.get("brand_url", "")
 
     @property
     def platform_image_url(self):
+        """Return the promotional image URL for the product platform."""
         return self.platform_media.get("image_url", "")
 
     @property
     def platform_image_alt(self):
+        """Return the image alt text for the platform promotional image."""
         return self.platform_media.get("image_alt", self.platform_label)
 
     @classmethod
     def platform_spotlights(cls):
+        """Return curated platform spotlight cards for the homepage."""
         return [
             {
                 **cls.PLATFORM_MEDIA[cls.PLAYSTATION],
@@ -176,6 +197,8 @@ class Product(models.Model):
 
 
 class Order(models.Model):
+    """A completed checkout transaction for a buyer."""
+
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     full_name = models.CharField(max_length=120)
     email = models.EmailField()
@@ -186,13 +209,17 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
+        """Return a readable label for the order."""
         return f"Order #{self.pk} for {self.buyer.username}"
 
     def get_absolute_url(self):
+        """Return the canonical detail page for the order."""
         return reverse("storefront:order-detail", kwargs={"pk": self.pk})
 
 
 class OrderItem(models.Model):
+    """A single purchased product snapshot captured within an order."""
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     store_name = models.CharField(max_length=120)
@@ -202,10 +229,13 @@ class OrderItem(models.Model):
 
     @property
     def subtotal(self):
+        """Return the stored line subtotal for this purchased item."""
         return self.price * self.quantity
 
 
 class Review(models.Model):
+    """A buyer-authored rating and comment attached to a product."""
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     rating = models.PositiveSmallIntegerField(
@@ -220,4 +250,5 @@ class Review(models.Model):
         unique_together = [("product", "buyer")]
 
     def __str__(self):
+        """Return a readable label for the review."""
         return f"{self.product.name} review by {self.buyer.username}"

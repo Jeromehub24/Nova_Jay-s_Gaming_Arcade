@@ -6,6 +6,7 @@ __pycache__/
 !.env.example
 db.sqlite3
 staticfiles/
+docs/_build/
 tweet_events.log
 storefront_graph.dot
 storefront_graph.png

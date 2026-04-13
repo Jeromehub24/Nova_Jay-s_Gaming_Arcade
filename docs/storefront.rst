@@ -43,6 +43,24 @@ storefront.api_serializers
 .. automodule:: storefront.api_serializers
    :members:
 
+storefront.urls
+---------------
+
+.. automodule:: storefront.urls
+   :members:
+
+storefront.api_urls
+-------------------
+
+.. automodule:: storefront.api_urls
+   :members:
+
+storefront.apps
+---------------
+
+.. automodule:: storefront.apps
+   :members:
+
 storefront.context_processors
 -----------------------------
 

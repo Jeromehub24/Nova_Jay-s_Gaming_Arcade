@@ -1,3 +1,5 @@
+"""URL routes for the storefront HTML interface."""
+
 from django.contrib.auth.views import (
     PasswordResetCompleteView,
     PasswordResetConfirmView,

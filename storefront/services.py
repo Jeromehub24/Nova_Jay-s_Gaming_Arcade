@@ -1,3 +1,5 @@
+"""Shared business logic for carts, checkout, roles, and announcements."""
+
 from decimal import Decimal
 
 from django.conf import settings
@@ -12,6 +14,7 @@ CART_SESSION_KEY = "nova_cart"
 
 
 def get_user_role(user):
+    """Return the role for the given user or ``None`` for anonymous users."""
     if not user.is_authenticated:
         return None
     if user.is_superuser:
@@ -21,23 +24,28 @@ def get_user_role(user):
 
 
 def user_is_vendor(user):
+    """Return ``True`` when the user should be treated as a vendor."""
     return get_user_role(user) == UserProfile.VENDOR
 
 
 def user_is_buyer(user):
+    """Return ``True`` when the user should be treated as a buyer."""
     return get_user_role(user) == UserProfile.BUYER
 
 
 def get_cart(request):
+    """Return the session cart, creating it when first accessed."""
     return request.session.setdefault(CART_SESSION_KEY, {})
 
 
 def save_cart(request, cart):
+    """Persist the session cart and mark the session as modified."""
     request.session[CART_SESSION_KEY] = cart
     request.session.modified = True
 
 
 def add_product_to_cart(request, product_id, quantity=1):
+    """Increase the quantity of a product in the session cart."""
     cart = get_cart(request)
     key = str(product_id)
     cart[key] = cart.get(key, 0) + quantity
@@ -45,6 +53,7 @@ def add_product_to_cart(request, product_id, quantity=1):
 
 
 def update_cart_item(request, product_id, quantity):
+    """Replace the quantity for a cart item or remove it when zero."""
     cart = get_cart(request)
     key = str(product_id)
     if quantity <= 0:
@@ -55,17 +64,20 @@ def update_cart_item(request, product_id, quantity):
 
 
 def remove_product_from_cart(request, product_id):
+    """Remove a product from the session cart."""
     cart = get_cart(request)
     cart.pop(str(product_id), None)
     save_cart(request, cart)
 
 
 def clear_cart(request):
+    """Empty the cart after a successful checkout."""
     request.session[CART_SESSION_KEY] = {}
     request.session.modified = True
 
 
 def get_cart_items(request):
+    """Return enriched cart items with product objects and subtotals."""
     cart = get_cart(request)
     if not cart:
         return []
@@ -92,6 +104,7 @@ def get_cart_items(request):
 
 
 def get_cart_total(request):
+    """Calculate the total cost of all items currently in the cart."""
     total = Decimal("0.00")
     for item in get_cart_items(request):
         total += item["subtotal"]
@@ -99,14 +112,17 @@ def get_cart_total(request):
 
 
 def get_cart_count(request):
+    """Return the total quantity of items in the cart."""
     return sum(get_cart(request).values())
 
 
 def buyer_has_purchased_product(buyer, product):
+    """Return ``True`` when the buyer has an order item for the product."""
     return OrderItem.objects.filter(order__buyer=buyer, product=product).exists()
 
 
 def verify_existing_reviews_for_buyer(buyer, products):
+    """Mark matching buyer reviews as verified after a purchase."""
     product_ids = list(
         {
             product.pk
@@ -125,6 +141,7 @@ def verify_existing_reviews_for_buyer(buyer, products):
 
 
 def build_invoice_text(order):
+    """Build the plain-text invoice email body for an order."""
     lines = [
         f"Invoice for order #{order.pk}",
         "",
@@ -143,6 +160,7 @@ def build_invoice_text(order):
 
 
 def send_invoice_email(order):
+    """Email a plain-text invoice to the buyer."""
     send_mail(
         subject=f"Jay's Gaming invoice #{order.pk}",
         message=build_invoice_text(order),
@@ -154,6 +172,7 @@ def send_invoice_email(order):
 
 @transaction.atomic
 def create_order_from_cart(request, buyer, full_name, email):
+    """Create an order, decrement stock, verify reviews, and clear the cart."""
     cart_items = get_cart_items(request)
     if not cart_items:
         raise ValueError("Your cart is empty.")
@@ -197,8 +216,10 @@ def create_order_from_cart(request, buyer, full_name, email):
 
 
 def announce_new_store(store):
+    """Send or log a social announcement for a newly created store."""
     return TweetClient().post_store_created(store)
 
 
 def announce_new_product(product):
+    """Send or log a social announcement for a newly created product."""
     return TweetClient().post_product_created(product)
