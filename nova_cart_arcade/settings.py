@@ -9,11 +9,15 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 def env_flag(name, default=False):
+    """Return a boolean-style environment variable as ``True`` or ``False``."""
     value = os.getenv(name)
     if value is None:
         return default
@@ -139,8 +143,18 @@ LOGIN_URL = "storefront:login"
 LOGIN_REDIRECT_URL = "storefront:dashboard"
 LOGOUT_REDIRECT_URL = "storefront:home"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@novacart.local"
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend",
+)
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "noreply@novacart.local")
+SERVER_EMAIL = os.getenv("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "25"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = env_flag("EMAIL_USE_TLS", default=False)
+EMAIL_USE_SSL = env_flag("EMAIL_USE_SSL", default=False)
 PASSWORD_RESET_TIMEOUT = 60 * 60
 
 REST_FRAMEWORK = {

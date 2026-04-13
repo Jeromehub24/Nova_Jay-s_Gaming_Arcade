@@ -2,9 +2,10 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import transaction
 
 from .functions.twitter_client import TweetClient
-from .models import Order, OrderItem, Product, UserProfile
+from .models import Order, OrderItem, Product, Review, UserProfile
 
 
 CART_SESSION_KEY = "nova_cart"
@@ -101,6 +102,28 @@ def get_cart_count(request):
     return sum(get_cart(request).values())
 
 
+def buyer_has_purchased_product(buyer, product):
+    return OrderItem.objects.filter(order__buyer=buyer, product=product).exists()
+
+
+def verify_existing_reviews_for_buyer(buyer, products):
+    product_ids = list(
+        {
+            product.pk
+            for product in products
+            if getattr(product, "pk", None) is not None
+        }
+    )
+    if not product_ids:
+        return 0
+
+    return Review.objects.filter(
+        buyer=buyer,
+        product_id__in=product_ids,
+        is_verified=False,
+    ).update(is_verified=True)
+
+
 def build_invoice_text(order):
     lines = [
         f"Invoice for order #{order.pk}",
@@ -129,6 +152,7 @@ def send_invoice_email(order):
     )
 
 
+@transaction.atomic
 def create_order_from_cart(request, buyer, full_name, email):
     cart_items = get_cart_items(request)
     if not cart_items:
@@ -148,6 +172,7 @@ def create_order_from_cart(request, buyer, full_name, email):
     )
 
     running_total = Decimal("0.00")
+    purchased_products = []
     for item in cart_items:
         product = item["product"]
         OrderItem.objects.create(
@@ -161,9 +186,11 @@ def create_order_from_cart(request, buyer, full_name, email):
         product.inventory -= item["quantity"]
         product.save(update_fields=["inventory", "updated_at"])
         running_total += item["subtotal"]
+        purchased_products.append(product)
 
     order.total = running_total
     order.save(update_fields=["total"])
+    verify_existing_reviews_for_buyer(buyer, purchased_products)
     send_invoice_email(order)
     clear_cart(request)
     return order

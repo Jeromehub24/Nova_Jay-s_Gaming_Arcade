@@ -1,3 +1,5 @@
+"""Twitter/X announcement helpers used when stores or products are created."""
+
 import json
 from datetime import datetime
 
@@ -7,9 +9,12 @@ from requests_oauthlib import OAuth1Session
 
 
 class TweetClient:
+    """Send social announcements or log them locally when disabled."""
+
     tweet_url = "https://api.twitter.com/2/tweets"
 
     def credentials_ready(self):
+        """Return ``True`` when all required Twitter credentials are available."""
         return all(
             [
                 settings.TWITTER_ENABLED,
@@ -21,6 +26,7 @@ class TweetClient:
         )
 
     def build_session(self):
+        """Build an authenticated OAuth1 session for Twitter requests."""
         return OAuth1Session(
             settings.TWITTER_API_KEY,
             client_secret=settings.TWITTER_API_SECRET,
@@ -29,6 +35,7 @@ class TweetClient:
         )
 
     def post_update(self, text):
+        """Send a tweet or fall back to a local audit log entry."""
         payload = {"text": text}
 
         if not self.credentials_ready():
@@ -43,6 +50,7 @@ class TweetClient:
         return {"status": "sent", "response": response.json()}
 
     def post_store_created(self, store):
+        """Announce that a new vendor store has been published."""
         lines = [
             "New store added on Jay's Gaming.",
             f"Store: {store.name}",
@@ -53,6 +61,7 @@ class TweetClient:
         return self.post_update("\n".join(lines))
 
     def post_product_created(self, product):
+        """Announce that a new product has been published."""
         lines = [
             "New product added on Jay's Gaming.",
             f"Store: {product.store.name}",
@@ -64,6 +73,7 @@ class TweetClient:
         return self.post_update("\n".join(lines))
 
     def write_local_log(self, payload, status, error=""):
+        """Append an announcement attempt to the local JSON log file."""
         entry = {
             "timestamp": datetime.utcnow().isoformat(),
             "status": status,

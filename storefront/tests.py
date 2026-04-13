@@ -4,6 +4,7 @@ from unittest.mock import patch
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
+from django.db import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes
@@ -56,6 +57,33 @@ class StorefrontFlowTests(TestCase):
         self.assertRedirects(response, reverse("storefront:login"))
         user = User.objects.get(username="newvendor")
         self.assertEqual(user.profile.role, UserProfile.VENDOR)
+
+    def test_signup_rejects_duplicate_email_case_insensitively(self):
+        response = self.client.post(
+            reverse("storefront:signup"),
+            {
+                "username": "buyerclone",
+                "email": "BUYER@EXAMPLE.COM",
+                "role": UserProfile.BUYER,
+                "password1": "strong-pass-123",
+                "password2": "strong-pass-123",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "An account with that email address already exists.",
+        )
+        self.assertFalse(User.objects.filter(username="buyerclone").exists())
+
+    def test_email_unique_constraint_blocks_duplicate_addresses(self):
+        with self.assertRaises(IntegrityError):
+            User.objects.create_user(
+                username="buyer_duplicate",
+                password="secret123",
+                email="buyer@example.com",
+            )
 
     def test_logout_is_rendered_as_post_form(self):
         self.client.login(username="buyer", password="secret123")
@@ -200,16 +228,45 @@ class StorefrontFlowTests(TestCase):
         review = Review.objects.get(product=self.product, buyer=self.buyer)
         self.assertTrue(review.is_verified)
 
+    def test_checkout_updates_existing_review_to_verified(self):
+        review = Review.objects.create(
+            product=self.product,
+            buyer=self.buyer,
+            rating=4,
+            comment="Looks fun even before checkout.",
+            is_verified=False,
+        )
+
+        self.client.login(username="buyer", password="secret123")
+        self.client.post(reverse("storefront:add-to-cart", args=[self.product.pk]))
+        response = self.client.post(
+            reverse("storefront:checkout"),
+            {
+                "full_name": "Jeremiah Barker",
+                "email": "buyer@example.com",
+            },
+        )
+
+        order = Order.objects.get()
+        self.assertRedirects(
+            response,
+            reverse("storefront:order-detail", args=[order.pk]),
+        )
+        review.refresh_from_db()
+        self.assertTrue(review.is_verified)
+
 
 class StorefrontApiTests(APITestCase):
     def setUp(self):
         self.vendor = User.objects.create_user(
             username="vendor_api",
             password="secret123",
+            email="vendor_api@example.com",
         )
         self.buyer = User.objects.create_user(
             username="buyer_api",
             password="secret123",
+            email="buyer_api@example.com",
         )
         UserProfile.objects.create(user=self.vendor, role=UserProfile.VENDOR)
         UserProfile.objects.create(user=self.buyer, role=UserProfile.BUYER)

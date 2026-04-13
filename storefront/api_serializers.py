@@ -1,9 +1,13 @@
+"""REST framework serializers for storefront resources."""
+
 from rest_framework import serializers
 
 from .models import Product, Review, Store
 
 
 class StoreSerializer(serializers.ModelSerializer):
+    """Serialize store records for API reads and writes."""
+
     vendor_id = serializers.IntegerField(source="vendor.id", read_only=True)
     vendor_username = serializers.CharField(source="vendor.username", read_only=True)
 
@@ -23,6 +27,8 @@ class StoreSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    """Serialize product records, including store metadata."""
+
     store_id = serializers.IntegerField(source="store.id", read_only=True)
     store_name = serializers.CharField(source="store.name", read_only=True)
 
@@ -47,6 +53,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Serialize buyer reviews for product detail responses."""
+
     buyer_username = serializers.CharField(source="buyer.username", read_only=True)
 
     class Meta:

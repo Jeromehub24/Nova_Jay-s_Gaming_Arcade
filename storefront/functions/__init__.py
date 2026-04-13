@@ -1,1 +1,1 @@
-# This package holds small helper modules used by the storefront app.
+"""Helper modules that keep third-party integrations out of core services."""

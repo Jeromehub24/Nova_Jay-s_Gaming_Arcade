@@ -1,3 +1,5 @@
+"""URL routes for the authenticated storefront REST API."""
+
 from django.urls import path
 
 from .api_views import (

@@ -27,6 +27,7 @@ from .services import (
     add_product_to_cart,
     announce_new_product,
     announce_new_store,
+    buyer_has_purchased_product,
     create_order_from_cart,
     get_cart_items,
     get_cart_total,
@@ -343,7 +344,7 @@ class CreateReviewView(BuyerRequiredMixin, View):
             messages.error(request, "Please fix the review form errors.")
             return redirect(product)
 
-        verified = OrderItem.objects.filter(order__buyer=request.user, product=product).exists()
+        verified = buyer_has_purchased_product(request.user, product)
         Review.objects.update_or_create(
             product=product,
             buyer=request.user,
