@@ -36,6 +36,10 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+If `pip install -r requirements.txt` fails while building `mysqlclient` on
+Windows, install Microsoft C++ Build Tools and the MariaDB/MySQL Connector C,
+then run the install command again.
+
 ### 3. Create the local `.env` file
 
 Copy the example file and then update the values for your machine:
